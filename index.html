@@ -3,13 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <title>Beatmaster Math</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #1a1a1a;
+      color: #00ffcc;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #beat-sheet {
+      font-size: 24px;
+      background: #333;
+      padding: 10px;
+      border: 2px solid #00ffcc;
+      margin: 20px auto;
+      width: 300px;
+    }
+    #answer {
+      padding: 10px;
+      font-size: 18px;
+      background: #222;
+      color: #fff;
+      border: 1px solid #00ffcc;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background: #00ffcc;
+      color: #1a1a1a;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00b38f;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h1>Beatmaster Math</h1>
   <div id="beat-sheet">6 × 4 = 24</div>
   <input id="answer" type="text" placeholder="Enter answer">
-  <button onclick="checkAnswer()">Drop the Beat</button>
-  <script src="script.js"></script>
+  <button onclick="hideSheet()">Mute Beat</button>
+  <button onclick="checkAnswer()" class="hidden">Drop the Beat</button>
+  <script>
+    let correctAnswer = "24";
+    let isHidden = false;
+
+    function hideSheet() {
+      document.getElementById("beat-sheet").classList.add("hidden");
+      document.querySelectorAll("button")[0].classList.add("hidden");
+      document.querySelectorAll("button")[1].classList.remove("hidden");
+      isHidden = true;
+    }
+
+    function checkAnswer() {
+      if (!isHidden) return;
+      let userAnswer = document.getElementById("answer").value;
+      if (userAnswer === correctAnswer) {
+        // Simulate beat drop (add audio later)
+        alert("Sick beat! You got it!");
+        resetGame();
+      } else {
+        alert("Static buzz—try again!");
+        document.getElementById("beat-sheet").classList.remove("hidden");
+        isHidden = false;
+      }
+    }
+
+    function resetGame() {
+      document.getElementById("beat-sheet").classList.remove("hidden");
+      document.getElementById("answer").value = "";
+      document.querySelectorAll("button")[0].classList.remove("hidden");
+      document.querySelectorAll("button")[1].classList.add("hidden");
+    }
+  </script>
 </body>
 </html>
