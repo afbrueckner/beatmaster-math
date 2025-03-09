@@ -20,6 +20,15 @@
       width: 350px;
       border-radius: 5px;
     }
+    #problem {
+      font-size: 24px;
+      background: #333;
+      padding: 15px;
+      border: 2px solid #00ffcc;
+      margin: 20px auto;
+      width: 350px;
+      border-radius: 5px;
+    }
     #answer {
       padding: 10px;
       font-size: 18px;
@@ -47,40 +56,62 @@
 </head>
 <body>
   <h1>Beatmaster Math</h1>
-  <div id="beat-sheet">8 × 6 = 48<br>(Hint: 5 × 6 = 30, + 3 × 6 = 18)</div>
+  <div id="beat-sheet" class="hidden">8 × 6 = 48<br>(Hint: 5 × 6 = 30, + 3 × 6 = 18)</div>
+  <div id="problem">8 × 6 = ?</div>
   <input id="answer" type="text" placeholder="Enter answer">
-  <button onclick="hideSheet()">Mute Beat</button>
+  <button onclick="tryMute()">Mute Beat</button>
   <button onclick="checkAnswer()" class="hidden">Drop the Beat</button>
   <script>
-    let correctAnswer = "48";
-    let isHidden = false;
+    let facts = [
+      { q: "6 × 4", a: "24", hint: "" },
+      { q: "8 × 6", a: "48", hint: "5 × 6 = 30, + 3 × 6 = 18" },
+      { q: "7 × 5", a: "35", hint: "5 × 5 = 25, + 2 × 5 = 10" }
+    ];
+    let currentFact = 0;
+    let isMuted = false;
 
-    function hideSheet() {
-      document.getElementById("beat-sheet").classList.add("hidden");
-      document.querySelectorAll("button")[0].classList.add("hidden");
-      document.querySelectorAll("button")[1].classList.remove("hidden");
-      isHidden = true;
+    function loadFact() {
+      let fact = facts[currentFact];
+      document.getElementById("beat-sheet").innerHTML = `${fact.q} = ${fact.a}${fact.hint ? "<br>(Hint: " + fact.hint + ")" : ""}`;
+      document.getElementById("problem").innerHTML = `${fact.q} = ?`;
     }
 
-    function checkAnswer() {
-      if (!isHidden) return;
+    function tryMute() {
       let userAnswer = document.getElementById("answer").value;
-      if (userAnswer === correctAnswer) {
-        alert("Sick beat, afbrueckner! You nailed 8 × 6 = 48!");
-        resetGame();
-      } else {
-        alert("Static buzz—remix it with the chunks!");
+      if (userAnswer === facts[currentFact].a) {
         document.getElementById("beat-sheet").classList.remove("hidden");
-        isHidden = false;
+        document.getElementById("problem").classList.add("hidden");
+        document.querySelectorAll("button")[0].classList.add("hidden");
+        document.querySelectorAll("button")[1].classList.remove("hidden");
+        isMuted = true;
+      } else if (userAnswer === "") {
+        alert("Yo, afbrueckner, drop an answer first!");
+      } else {
+        alert("Static buzz—wrong mix! Try again.");
+        document.getElementById("answer").value = "";
       }
     }
 
+    function checkAnswer() {
+      if (!isMuted) return;
+      let fact = facts[currentFact];
+      alert(`Sick beat, afbrueckner! You nailed ${fact.q} = ${fact.a}!`);
+      currentFact = (currentFact + 1) % facts.length;
+      resetGame();
+      loadFact();
+    }
+
     function resetGame() {
-      document.getElementById("beat-sheet").classList.remove("hidden");
+      document.getElementById("beat-sheet").classList.add("hidden");
+      document.getElementById("problem").classList.remove("hidden");
       document.getElementById("answer").value = "";
       document.querySelectorAll("button")[0].classList.remove("hidden");
       document.querySelectorAll("button")[1].classList.add("hidden");
+      isMuted = false;
     }
+
+    // Start with first fact
+    loadFact();
   </script>
 </body>
 </html>
