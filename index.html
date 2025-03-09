@@ -1,55 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Beatmaster Math</title>
-  <style>
-    body {
-      background: #1a1a1a;
-      color: #00ffcc;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    #beat-sheet {
-      font-size: 24px;
-      background: #333;
-      padding: 10px;
-      border: 2px solid #00ffcc;
-      margin: 20px auto;
-      width: 300px;
-    }
-    #answer {
-      padding: 10px;
-      font-size: 18px;
-      background: #222;
-      color: #fff;
-      border: 1px solid #00ffcc;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      background: #00ffcc;
-      color: #1a1a1a;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #00b38f;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
 <body>
   <h1>Beatmaster Math</h1>
-  <div id="beat-sheet">6 × 4 = 24</div>
+  <div id="beat-sheet">8 × 6 = 48<br>(Hint: 5 × 6 = 30, + 3 × 6 = 18)</div>
   <input id="answer" type="text" placeholder="Enter answer">
   <button onclick="hideSheet()">Mute Beat</button>
   <button onclick="checkAnswer()" class="hidden">Drop the Beat</button>
   <script>
-    let correctAnswer = "24";
+    let correctAnswer = "48";
     let isHidden = false;
 
     function hideSheet() {
@@ -63,11 +19,10 @@
       if (!isHidden) return;
       let userAnswer = document.getElementById("answer").value;
       if (userAnswer === correctAnswer) {
-        // Simulate beat drop (add audio later)
-        alert("Sick beat! You got it!");
+        alert("Sick beat! You got 8 × 6 = 48!");
         resetGame();
       } else {
-        alert("Static buzz—try again!");
+        alert("Static buzz—retry with the chunks!");
         document.getElementById("beat-sheet").classList.remove("hidden");
         isHidden = false;
       }
@@ -81,4 +36,3 @@
     }
   </script>
 </body>
-</html>
