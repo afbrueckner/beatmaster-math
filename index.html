@@ -5,49 +5,54 @@
   <title>Beatmaster Math</title>
   <style>
     body {
-      background: #1a1a1a;
-      color: #00ffcc;
+      background: #ffffff;
+      color: #000000;
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
     }
     #beat-sheet {
-      font-size: 24px;
-      background: #333;
+      font-size: 28px;
+      background: #ff0000; /* Red */
+      color: #ffffff;
       padding: 15px;
-      border: 2px solid #00ffcc;
+      border: 3px solid #0000ff; /* Blue */
       margin: 20px auto;
-      width: 350px;
-      border-radius: 5px;
+      width: 400px;
     }
     #problem {
-      font-size: 24px;
-      background: #333;
+      font-size: 28px;
+      background: #ffff00; /* Yellow */
+      color: #000000;
       padding: 15px;
-      border: 2px solid #00ffcc;
+      border: 3px solid #0000ff;
       margin: 20px auto;
-      width: 350px;
-      border-radius: 5px;
+      width: 400px;
     }
     #answer {
       padding: 10px;
-      font-size: 18px;
-      background: #222;
-      color: #fff;
-      border: 1px solid #00ffcc;
+      font-size: 20px;
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid #0000ff;
       margin: 10px;
+      width: 100px;
     }
     button {
-      padding: 10px 20px;
-      font-size: 18px;
-      background: #00ffcc;
-      color: #1a1a1a;
+      padding: 12px 24px;
+      font-size: 20px;
+      background: #0000ff; /* Blue */
+      color: #ffffff;
       border: none;
       cursor: pointer;
-      border-radius: 5px;
     }
     button:hover {
-      background: #00b38f;
+      background: #000099;
+    }
+    #feedback {
+      font-size: 24px;
+      margin: 10px;
+      color: #ff0000;
     }
     .hidden {
       display: none;
@@ -56,56 +61,108 @@
 </head>
 <body>
   <h1>Beatmaster Math</h1>
-  <div id="beat-sheet">8 × 6 = 48<br>(Hint: 5 × 6 = 30, + 3 × 6 = 18)</div>
-  <div id="problem" class="hidden">8 × 6 = ?</div>
-  <input id="answer" type="text" placeholder="Enter answer">
+  <div id="beat-sheet">8 + 6 = 14<br>(Hint: 8 + 2 = 10, + 4 = 14)</div>
+  <div id="problem" class="hidden">8 + 6 = ?</div>
+  <input id="answer" type="text" placeholder="Answer">
   <button onclick="tryMute()">Mute Beat</button>
   <button onclick="checkAnswer()" class="hidden">Drop the Beat</button>
+  <div id="feedback"></div>
   <script>
-    let facts = [
-      { q: "6 × 4", a: "24", hint: "" },
-      { q: "8 × 6", a: "48", hint: "5 × 6 = 30, + 3 × 6 = 18" },
-      { q: "7 × 5", a: "35", hint: "5 × 5 = 25, + 2 × 5 = 10" }
-    ];
+    let facts = {
+      addition: [
+        { q: "6 + 1", a: "7", hint: "6 + 1 = 7" },
+        { q: "6 + 2", a: "8", hint: "6 + 2 = 8" },
+        { q: "6 + 3", a: "9", hint: "6 + 2 = 8, + 1 = 9" },
+        { q: "6 + 4", a: "10", hint: "6 + 4 = 10" },
+        { q: "6 + 5", a: "11", hint: "6 + 4 = 10, + 1 = 11" },
+        { q: "6 + 6", a: "12", hint: "6 + 4 = 10, + 2 = 12" },
+        { q: "6 + 7", a: "13", hint: "6 + 4 = 10, + 3 = 13" },
+        { q: "6 + 8", a: "14", hint: "6 + 4 = 10, + 4 = 14" },
+        { q: "6 + 9", a: "15", hint: "6 + 4 = 10, + 5 = 15" },
+        { q: "6 + 10", a: "16", hint: "6 + 10 = 16" },
+        { q: "6 + 11", a: "17", hint: "6 + 10 = 16, + 1 = 17" },
+        { q: "6 + 12", a: "18", hint: "6 + 10 = 16, + 2 = 18" }
+      ],
+      subtraction: [
+        { q: "12 - 1", a: "11", hint: "12 - 1 = 11" },
+        { q: "12 - 2", a: "10", hint: "12 - 2 = 10" },
+        { q: "12 - 3", a: "9", hint: "12 - 2 = 10, - 1 = 9" },
+        { q: "12 - 4", a: "8", hint: "12 - 2 = 10, - 2 = 8" },
+        { q: "12 - 5", a: "7", hint: "12 - 5 = 7" },
+        { q: "12 - 6", a: "6", hint: "12 - 5 = 7, - 1 = 6" },
+        { q: "12 - 7", a: "5", hint: "12 - 5 = 7, - 2 = 5" },
+        { q: "12 - 8", a: "4", hint: "12 - 5 = 7, - 3 = 4" },
+        { q: "12 - 9", a: "3", hint: "12 - 10 = 2, + 1 = 3" },
+        { q: "12 - 10", a: "2", hint: "12 - 10 = 2" },
+        { q: "12 - 11", a: "1", hint: "12 - 10 = 2, - 1 = 1" },
+        { q: "12 - 12", a: "0", hint: "12 - 12 = 0" }
+      ],
+      multiplication: [
+        { q: "6 × 1", a: "6", hint: "6 × 1 = 6" },
+        { q: "6 × 2", a: "12", hint: "6 + 6 = 12" },
+        { q: "6 × 3", a: "18", hint: "6 × 2 = 12, + 6 = 18" },
+        { q: "6 × 4", a: "24", hint: "6 × 2 = 12, × 2 = 24" },
+        { q: "6 × 5", a: "30", hint: "6 × 5 = 30" },
+        { q: "6 × 6", a: "36", hint: "6 × 5 = 30, + 6 = 36" },
+        { q: "6 × 7", a: "42", hint: "6 × 5 = 30, + 12 = 42" },
+        { q: "6 × 8", a: "48", hint: "6 × 5 = 30, + 18 = 48" },
+        { q: "6 × 9", a: "54", hint: "6 × 10 = 60, - 6 = 54" },
+        { q: "6 × 10", a: "60", hint: "6 × 10 = 60" },
+        { q: "6 × 11", a: "66", hint: "6 × 10 = 60, + 6 = 66" },
+        { q: "6 × 12", a: "72", hint: "6 × 10 = 60, + 12 = 72" }
+      ],
+      division: [
+        { q: "12 ÷ 1", a: "12", hint: "12 ÷ 1 = 12" },
+        { q: "12 ÷ 2", a: "6", hint: "12 ÷ 2 = 6" },
+        { q: "12 ÷ 3", a: "4", hint: "3 × 4 = 12" },
+        { q: "12 ÷ 4", a: "3", hint: "4 × 3 = 12" },
+        { q: "12 ÷ 6", a: "2", hint: "6 × 2 = 12" },
+        { q: "12 ÷ 12", a: "1", hint: "12 ÷ 12 = 1" }
+      ]
+    };
+    let currentOp = "multiplication";
     let currentFact = 0;
     let isMuted = false;
 
     function loadFact() {
-      let fact = facts[currentFact];
+      let fact = facts[currentOp][currentFact];
       document.getElementById("beat-sheet").innerHTML = `${fact.q} = ${fact.a}${fact.hint ? "<br>(Hint: " + fact.hint + ")" : ""}`;
       document.getElementById("problem").innerHTML = `${fact.q} = ?`;
     }
 
     function tryMute() {
       let userAnswer = document.getElementById("answer").value;
-      if (userAnswer === facts[currentFact].a) {
+      if (userAnswer === facts[currentOp][currentFact].a) {
         document.getElementById("beat-sheet").classList.add("hidden");
         document.getElementById("problem").classList.remove("hidden");
-        document.getElementById("answer").value = ""; // Clear the input
+        document.getElementById("answer").value = "";
         document.querySelectorAll("button")[0].classList.add("hidden");
         document.querySelectorAll("button")[1].classList.remove("hidden");
         isMuted = true;
       } else if (userAnswer === "") {
-        alert("Yo, afbrueckner, drop an answer first!");
+        document.getElementById("feedback").innerText = "Drop an answer first!";
       } else {
-        alert("Static buzz—wrong mix! Try again.");
+        document.getElementById("feedback").innerText = "Wrong mix—try again!";
         document.getElementById("answer").value = "";
       }
     }
 
     function checkAnswer() {
       if (!isMuted) return;
-      let fact = facts[currentFact];
+      let fact = facts[currentOp][currentFact];
       let userAnswer = document.getElementById("answer").value;
       if (userAnswer === fact.a) {
-        alert(`Sick beat, afbrueckner! You nailed ${fact.q} = ${fact.a}!`);
-        currentFact = (currentFact + 1) % facts.length;
-        resetGame();
-        loadFact();
+        document.getElementById("feedback").innerText = "Sick beat! Next track...";
+        currentFact = (currentFact + 1) % facts[currentOp].length;
+        setTimeout(() => {
+          resetGame();
+          loadFact();
+          document.getElementById("feedback").innerText = "";
+        }, 1000); // Auto-advance after 1 sec
       } else if (userAnswer === "") {
-        alert("Yo, afbrueckner, drop an answer first!");
+        document.getElementById("feedback").innerText = "Drop an answer first!";
       } else {
-        alert("Static buzz—wrong mix! Try again.");
+        document.getElementById("feedback").innerText = "Wrong mix—try again!";
         document.getElementById("answer").value = "";
       }
     }
@@ -118,6 +175,12 @@
       document.querySelectorAll("button")[1].classList.add("hidden");
       isMuted = false;
     }
+
+    // Arrow key navigation
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" && !isMuted) tryMute();
+      if (e.key === "ArrowRight" && isMuted) checkAnswer();
+    });
 
     // Start with first fact
     loadFact();
