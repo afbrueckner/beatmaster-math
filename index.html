@@ -81,6 +81,7 @@
       if (userAnswer === facts[currentFact].a) {
         document.getElementById("beat-sheet").classList.add("hidden");
         document.getElementById("problem").classList.remove("hidden");
+        document.getElementById("answer").value = ""; // Clear the input
         document.querySelectorAll("button")[0].classList.add("hidden");
         document.querySelectorAll("button")[1].classList.remove("hidden");
         isMuted = true;
@@ -95,10 +96,18 @@
     function checkAnswer() {
       if (!isMuted) return;
       let fact = facts[currentFact];
-      alert(`Sick beat, afbrueckner! You nailed ${fact.q} = ${fact.a}!`);
-      currentFact = (currentFact + 1) % facts.length;
-      resetGame();
-      loadFact();
+      let userAnswer = document.getElementById("answer").value;
+      if (userAnswer === fact.a) {
+        alert(`Sick beat, afbrueckner! You nailed ${fact.q} = ${fact.a}!`);
+        currentFact = (currentFact + 1) % facts.length;
+        resetGame();
+        loadFact();
+      } else if (userAnswer === "") {
+        alert("Yo, afbrueckner, drop an answer first!");
+      } else {
+        alert("Static buzz—wrong mix! Try again.");
+        document.getElementById("answer").value = "";
+      }
     }
 
     function resetGame() {
